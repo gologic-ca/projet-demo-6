@@ -1,24 +1,27 @@
-name: Close Invalid Issues
-
+name: Close issue
 on:
   workflow_dispatch:
+    inputs:
+      issueNumber:
+        description: 'Issue number to close'
+        required: true
 
 jobs:
-  close_invalid_issues:
+  close-issue:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18'
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Close invalid issues
-      run: npx ts-node .github/actions/close_invalid_issues.ts
-      env:
-        ACTION_TOKEN: ${{ secrets.ACTION_TOKEN }}
+      - name: Close issue
+        run: node .github/actions/close-issue.js ${{ github.event.inputs.issueNumber }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
