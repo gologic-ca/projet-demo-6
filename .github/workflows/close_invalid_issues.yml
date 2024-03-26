@@ -5,7 +5,6 @@ on:
       issueNumber:
         description: 'Issue number to close'
         required: true
-
 jobs:
   close-issue:
     runs-on: ubuntu-latest
@@ -19,9 +18,11 @@ jobs:
           node-version: '14'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm install
+          npm install -g ts-node
 
       - name: Close issue
-        run: node .github/actions/close-issue.js ${{ github.event.inputs.issueNumber }}
+        run: ts-node .github/actions/close-issue.ts ${{ github.event.inputs.issueNumber }}
         env:
           GITHUB_TOKEN: ${{ secrets.ACTION_TOKEN }}
